@@ -1,0 +1,10 @@
+.vscode/
+.idea/
+
+*.deb
+
+src/cmd/todo_server/todo_server
+dist
+
+local.yml
+prod.yml
