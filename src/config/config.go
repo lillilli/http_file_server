@@ -4,6 +4,8 @@ package config
 type Config struct {
 	HTTP HTTPServer
 	Log  LogConfig
+
+	StaticDir string
 }
 
 // LogConfig конфигурация логгера

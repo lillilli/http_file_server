@@ -8,10 +8,16 @@
   version = "v1.4.7"
 
 [[projects]]
-  name = "github.com/gorilla/websocket"
+  name = "github.com/gorilla/context"
   packages = ["."]
-  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
-  version = "v1.2.0"
+  revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
+  version = "v1.1.1"
+
+[[projects]]
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
+  version = "v1.6.2"
 
 [[projects]]
   branch = "master"
@@ -32,15 +38,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/lib/pq"
-  packages = [
-    ".",
-    "oid"
-  ]
-  revision = "d34b9ff171c21ad295489235aec8b6626023cd04"
-
-[[projects]]
-  branch = "master"
   name = "github.com/lillilli/vconf"
   packages = ["."]
   revision = "a75c3f943e564296bca2b03fc4f8b11d08597971"
@@ -50,18 +47,6 @@
   packages = ["."]
   revision = "c3beff4c2358b44d0493c7dda585e7db7ff28ae6"
   version = "v1.7.6"
-
-[[projects]]
-  name = "github.com/mattes/migrate"
-  packages = [
-    ".",
-    "database",
-    "database/postgres",
-    "source",
-    "source/file"
-  ]
-  revision = "035c07716cd373d88456ec4d701402df52584cb4"
-  version = "v3.0.1"
 
 [[projects]]
   branch = "master"
@@ -148,6 +133,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "78f2980d5071eb54c44af9da24e486e75e03cd5bf303ccd21c3b0031417fb67f"
+  inputs-digest = "54cb2690b70ab60c76396d3879915909cc0c3273d5bed348b7c427860fdb12b0"
   solver-name = "gps-cdcl"
   solver-version = 1

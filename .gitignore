@@ -3,8 +3,7 @@
 
 *.deb
 
-src/cmd/todo_server/todo_server
+src/cmd/http_file_server/http_file_server
 dist
 
-local.yml
 prod.yml

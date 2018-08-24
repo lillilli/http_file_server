@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/lillilli/dr_web_exercise/src/config"
-	"github.com/lillilli/dr_web_exercise/src/types"
+	"github.com/lillilli/http_file_server/src/config"
+	"github.com/lillilli/http_file_server/src/types"
 	logging "github.com/op/go-logging"
 	"github.com/pkg/errors"
 )
@@ -67,7 +67,5 @@ func (s *Server) Start() error {
 // Stop - выключение http серера
 func (s *Server) Stop() error {
 	s.log.Info("Stopping...")
-
-	err := s.server.Shutdown(nil)
-	return err
+	return s.server.Shutdown(nil)
 }

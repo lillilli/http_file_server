@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/lillilli/dr_web_exercise/src/config"
-	"github.com/lillilli/dr_web_exercise/src/http"
-	"github.com/lillilli/dr_web_exercise/src/types"
+	"github.com/lillilli/http_file_server/src/config"
+	"github.com/lillilli/http_file_server/src/http"
+	"github.com/lillilli/http_file_server/src/types"
 	logging "github.com/op/go-logging"
 	"github.com/pkg/errors"
 )

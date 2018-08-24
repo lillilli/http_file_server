@@ -1,8 +1,8 @@
-SERVICE_NAME   := dr_web_exercise
+SERVICE_NAME   := http_file_server
 VERSION        := $(shell git describe --tags --always --dirty="-dev")
 DATE           := $(shell date -u '+%Y-%m-%d-%H:%M UTC')
 VERSION_FLAGS  := -ldflags='-X "main.Version=$(VERSION)" -X "main.BuildTime=$(DATE)"'
-PKG            := github.com/VitalikAlt/todo_manager/server
+PKG            := github.com/lillilli/http_file_server
 PKG_LIST       := $(shell go list ${PKG}/... | grep -v /vendor/)
 CONFIG         := $(wildcard local.yml)
 NAMESPACE	   := "default"
@@ -79,9 +79,3 @@ coverage:
 	$Q PKG=$(PKG) ./tools/coverage.sh;
 
 Q := $(if $V,,@)
-
-
-db\:migrate:
-	cd src/cmd/$(SERVICE_NAME) && go build && ./$(SERVICE_NAME) -config=../../../local.yml -migrate
-db\:downgrade:
-	cd src/cmd/$(SERVICE_NAME) && go build && ./$(SERVICE_NAME) -config=../../../local.yml -migrate -steps=-1
