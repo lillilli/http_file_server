@@ -5,7 +5,7 @@ Test project.
 ## Description
 
 HTTP File Server - server, providing http API for downloading, uploading and removing files by their md5 hash string.
-All files store in directory, which is setting up from config file.
+All files store in directory, which is setting up from the config file.
 
 ## HTTP API
 
