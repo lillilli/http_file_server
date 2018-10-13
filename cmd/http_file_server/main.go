@@ -4,16 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	netHTTP "net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/hashicorp/logutils"
 	"github.com/lillilli/http_file_server/config"
-	"github.com/lillilli/http_file_server/fs"
-	"github.com/lillilli/http_file_server/http/handler"
+	"github.com/lillilli/http_file_server/http"
 	"github.com/lillilli/vconf"
+	"github.com/pkg/errors"
 )
 
 var (
@@ -41,41 +41,23 @@ func main() {
 		Writer:   os.Stdout,
 	})
 
-	startHTTPServer(cfg)
+	if err := startHTTPServer(cfg); err != nil {
+		log.Fatalln(err)
+	}
 }
 
-func startHTTPServer(cfg *config.Config) {
-	router := mux.NewRouter()
+func startHTTPServer(cfg *config.Config) error {
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
 
-	filesHander, err := handler.NewFileHandler(cfg.StaticDir, fs.NewStorage())
-	if err != nil {
-		log.Printf("[ERROR] Initializing file handler failed: %v", err)
-		return
+	server := http.NewServer(cfg)
+
+	if err := server.Start(); err != nil {
+		return errors.Wrap(err, "unable to start http server")
 	}
 
-	router.HandleFunc("/health", LogRequest(handler.HealthHandler)).Methods(netHTTP.MethodGet)
-	router.HandleFunc("/download/{filehash}", LogRequest(filesHander.GetFile)).Methods(netHTTP.MethodGet)
-	router.HandleFunc("/delete/{filehash}", LogRequest(filesHander.Remove)).Methods(netHTTP.MethodGet)
-	router.HandleFunc("/upload", LogRequest(filesHander.Upload)).Methods(netHTTP.MethodPost)
+	<-signals
+	close(signals)
 
-	srv := netHTTP.Server{
-		Addr:         fmt.Sprintf("%s:%d", cfg.HTTP.Host, cfg.HTTP.Port),
-		ReadTimeout:  readTimeout,
-		WriteTimeout: writeTimeout,
-
-		Handler: router,
-	}
-
-	log.Printf("[INFO] Starting server on %s", srv.Addr)
-	log.Fatal(srv.ListenAndServe())
-}
-
-// LogRequest - log incoming requests
-func LogRequest(handle func(w netHTTP.ResponseWriter, r *netHTTP.Request)) netHTTP.HandlerFunc {
-	return func(w netHTTP.ResponseWriter, r *netHTTP.Request) {
-		start := time.Now()
-		log.Printf("[DENUG] Handling %s request %s", r.Method, r.URL.Path)
-		handle(w, r)
-		log.Printf("[DEBUG] Handle %s complete, handle time (nanoseconds): %d", r.URL.Path, time.Since(start).Nanoseconds())
-	}
+	return server.Stop()
 }

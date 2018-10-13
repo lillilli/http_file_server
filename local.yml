@@ -1,5 +1,0 @@
-# Storage for static files.
-StaticDir: ./../../shared/static
-
-HTTP:
-  Port: 8080

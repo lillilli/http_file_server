@@ -1,6 +1,6 @@
 package config
 
-// Config - определение структуры конфига
+// Config - service configuration
 type Config struct {
 	HTTP HTTPServer
 	Log  LogConfig
@@ -8,12 +8,12 @@ type Config struct {
 	StaticDir string
 }
 
-// LogConfig конфигурация логгера
+// LogConfig - logger configuration
 type LogConfig struct {
 	MinLevel string `env:"LOG_LEVEL" default:"DEBUG"`
 }
 
-// HTTPServer - параметры HTTP-сервера
+// HTTPServer - http server configuration
 type HTTPServer struct {
 	Host string `default:"0.0.0.0"`
 	Port int    `default:"8081"`
