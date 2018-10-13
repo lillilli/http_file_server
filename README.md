@@ -74,7 +74,11 @@ ok
 
 ### Requirements
 
-You need to have vgo installed (go get -u golang.org/x/vgo).
+You need to have vgo installed.
+
+```bash
+go get -u golang.org/x/vgo
+```
 
 ### Launch
 
