@@ -1,9 +1,11 @@
 # HTTP File Server
 
-## Общее описание сервера
+Test project.
 
-HTTP File Server - сервер, предостваляющий http api для загрузки, получения и удаления файла по хэшу (md5).
-Все файлы хранятся в директории, которая задаётся через конфигурационный файл.
+## Description
+
+HTTP File Server - server, providing http API for downloading, uploading and removing files by their md5 hash string.
+All files and store in directory, which is setting up from config file.
 
 ## HTTP API
 
@@ -13,7 +15,7 @@ HTTP File Server - сервер, предостваляющий http api для 
 GET /health
 ```
 
-Ответ вида:
+Response:
 
 ```http
 200 OK
@@ -21,14 +23,14 @@ GET /health
 
 ### Upload
 
-Загрузка файла на сервер. Файл передается через форму в поле upload.
+Uploading file to the server. File is setting up by the form, field "upload".
 
 ```http
 POST /upload
 Content-Type: multipart/form-data
 ```
 
-Ответ вида:
+Response:
 
 ```http
 200 OK
@@ -38,13 +40,13 @@ Content-Type: multipart/form-data
 
 ### Download
 
-Получение файла с сервера.
+Downloading file from the server.
 
 ```http
 POST /download/{file_hash}
 ```
 
-Ответ вида:
+Response:
 
 ```http
 200 OK
@@ -54,13 +56,13 @@ POST /download/{file_hash}
 
 ### Delete
 
-Удаление файла с сервера.
+Removing file by his md5 hash.
 
 ```http
 POST /delete/{file_hash}
 ```
 
-Ответ вида:
+Response:
 
 ```http
 200 OK
@@ -68,24 +70,34 @@ POST /delete/{file_hash}
 ok
 ```
 
-## Сборка
+## Local launch
 
-1. Склонировать репозиторий.
-2. Собрать проект
+### Requirements
 
-```bash
-git clone ssh://git@gitlab2.sqtools.ru:10022/internals/sqcdn/api.git
-make build
-```
+You need to have vgo installed (go get -u golang.org/x/vgo).
 
-### Локальный запуск
+### Launch
 
-1. Отредактировать `local.yml`. (Скорее всего потребуется сменить только порт, по-умолчанию порт 8080)
-2. Запустить сервис.
+1. Clone the repository.
+2. Install dependencies, create the config file.
+3. Create static files firectory, based on config file.
+4. Launch the project.
 
 ```bash
-vim local.yml
+git clone https://github.com/lillilli/http_file_server.git && cd http_file_server
+make setup && make config
+mkdir -p shared/static
 make run
 ```
 
-P.s.: local.yml и shared/static не в .gitignore для удобства.
+### Docker
+
+1. Clone the repository.
+2. Make image (need some time).
+3. Launch image (will be available on localhost:8080).
+
+```bash
+git clone https://github.com/lillilli/http_file_server.git && cd http_file_server
+make image
+make run:image
+```

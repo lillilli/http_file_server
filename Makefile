@@ -1,81 +1,46 @@
 SERVICE_NAME   := http_file_server
-VERSION        := $(shell git describe --tags --always --dirty="-dev")
-DATE           := $(shell date -u '+%Y-%m-%d-%H:%M UTC')
-VERSION_FLAGS  := -ldflags='-X "main.Version=$(VERSION)" -X "main.BuildTime=$(DATE)"'
 PKG            := github.com/lillilli/http_file_server
 PKG_LIST       := $(shell go list ${PKG}/... | grep -v /vendor/)
 CONFIG         := $(wildcard local.yml)
 NAMESPACE	   := "default"
-
-# Проверка, задана ли переменная окружения REGISTRY
-ifdef REGISTRY
-	REGISTRY := $(REGISTRY)/
-endif
-
-# Флаг отвечающий за подробный вывод результатов работы make, раскоментируйте чтобы включить
-V := 1
 
 .PHONY: clean test
 
 .PHONY: all
 all: setup test build
 
-# Установка необходимых для сборки или тестирования утилит и зависимостей
 .PHONY: setup
-setup: clean
+setup: ## Installing all service dependencies.
 	@echo "Setup..."
-	# e.g. sudo apt-get install clang
+	vgo mod vendor
 
-# Сборка исполняемого файла сервиса
+.PHONY: config
+config: ## Creating the local config yml.
+	@echo "Creating local config yml ..."
+	cp config.example.yml local.yml
+
 .PHONY: build
-build:
+build: ## Build the executable file of service.
 	@echo "Building..."
-	$Q cd src/cmd/$(SERVICE_NAME) && go build
+	cd cmd/$(SERVICE_NAME) && go build
 
-# Запуск сервиса с локальным конфигом
 .PHONY: run
-run: build
+run: build ## Run service with local config.
 	@echo "Running..."
-	$Q cd src/cmd/$(SERVICE_NAME) && ./$(SERVICE_NAME) -config=../../../local.yml
+	cd cmd/$(SERVICE_NAME) && ./$(SERVICE_NAME) -config=../../local.yml
 
-# Запуск тестов
-.PHONY: test
-test:
-	@echo "Testing..."
-	$Q go test -race ${PKG_LIST}
+image: ## Build a docker image.
+	@echo "Docker image building..."
+	$Q docker build -t $(SERVICE_NAME) .
 
-# Отображение списка существующих тэгов
-.PHONY: tags
-tags:
-	@echo "Listing tags..."
-	$Q @git tag
+run\:image: ## Run a docker image.
+	@echo "Running docker image..."
+	docker run -it -p 8080:8081 $(SERVICE_NAME) ./http_file_server -config local.yml
 
-# Сборка Docker-образа
-.PHONY: image
-image:
-	@echo "Docker Image Build..."
-	$Q docker build -t $(REGISTRY)$(SERVICE_NAME):$(VERSION) .
-
-.PHONY: push
-push:
-	@echo "Pushing Docker image..."
-	$Q docker push $(REGISTRY)$(SERVICE_NAME):$(VERSION)
-
-.PHONY: deploy
-deploy:
-	@echo "Deploy Docker image..."
-	$Q cd deploy && helm upgrade --set image.tag=${VERSION} --namespace=${NAMESPACE} --install ${SERVICE_NAME} .
-
-# Очистка окружения от временных файлов и т.п.
 .PHONY: clean
-clean:
+clean: ## Cleans the temp files and etc.
 	@echo "Clean..."
-	$Q rm -f src/cmd/$(SERVICE_NAME)/$(SERVICE_NAME)
+	rm -f cmd/$(SERVICE_NAME)/$(SERVICE_NAME)
 
-# Подсчет покрытия кода тестами
-.PHONY: coverage
-coverage:
-	@echo "Calculating coverage..."
-	$Q PKG=$(PKG) ./tools/coverage.sh;
-
-Q := $(if $V,,@)
+help: ## Display this help screen
+	@grep -E '^[a-zA-Z_-\:]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ": .*?## "}; {gsub(/[\\]*/,""); printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

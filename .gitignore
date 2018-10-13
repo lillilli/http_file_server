@@ -3,7 +3,11 @@
 
 *.deb
 
-src/cmd/http_file_server/http_file_server
+cmd/http_file_server/http_file_server
 dist
 
+vendor
+shared
+
 prod.yml
+local.yml
