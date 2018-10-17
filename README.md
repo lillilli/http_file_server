@@ -84,7 +84,7 @@ go get -u golang.org/x/vgo
 
 1. Clone the repository.
 2. Install dependencies, create the config file.
-3. Create static files firectory, based on config file.
+3. Create static files directory, based on config file.
 4. Launch the project.
 
 ```bash
